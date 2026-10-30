@@ -2,3 +2,5 @@ ffmpeg-7.0.2-amd64-static
 Videos2Convert
 *.mp4
 ffmpeg-release-amd64-static.tar.xz
+Gifs/*
+*.gif
