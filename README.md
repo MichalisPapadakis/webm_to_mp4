@@ -1,15 +1,29 @@
-# webm_to_mp4
+# Video converter
 
-Convert `.webm` videos to `.mp4` using Python + FFmpeg.
+Convert videos to `.mp4` or `.gif` using Python + FFmpeg. Any input format FFmpeg can read works (`.webm`, `.mov`, `.mkv`, `.mp4`, ...).
 
 ## Usage
 
+### To MP4
+
 ```sh
-python webm_to_mp4.py input.webm -o output.mp4 -s 3
+python to_mp4.py input.webm -o output.mp4 -s 3
 ```
 
-- `-o`: output file name
+- `-o`: output file name (default: input name with `.mp4`)
 - `-s`: speed multiplier (for example, `3` = 3x)
+
+### To GIF
+
+```sh
+python to_gif.py input.mp4 -o output.gif --fps 15 -w 480
+```
+
+- `-o`: output file name (default: input name with `.gif`)
+- `--fps`: GIF frame rate (default: `15`)
+- `-w`: output width in pixels (default: keep original)
+
+If the default output name would be the same as the input (e.g. `clip.mp4` → `clip.mp4`), `_out` is appended (`clip_out.mp4`).
 
 ## Install FFmpeg (RSL/Linux)
 

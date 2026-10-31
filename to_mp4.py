@@ -4,18 +4,21 @@ import os
 import sys
 
 
-def convert_webm_to_mp4(input_file, output_file=None, speed=1.0):
+def convert_to_mp4(input_file, output_file=None, speed=1.0):
     if not os.path.exists(input_file):
         print(f"Input file not found: {input_file}")
         sys.exit(1)
 
-    if not input_file.endswith(".webm"):
-        print("Input file must be .webm")
-        sys.exit(1)
-
     # Default output name
     if output_file is None:
-        output_file = input_file.replace(".webm", ".mp4")
+        base = os.path.splitext(input_file)[0]
+        output_file = base + ".mp4"
+        if os.path.abspath(output_file) == os.path.abspath(input_file):
+            output_file = base + "_out.mp4"
+
+    if os.path.abspath(output_file) == os.path.abspath(input_file):
+        print("Output file must differ from input file")
+        sys.exit(1)
 
     # Video speed filter + ensure even dimensions for libx264 (yuv420p)
     video_filter = f"setpts={1/speed}*PTS,pad=ceil(iw/2)*2:ceil(ih/2)*2"
@@ -58,12 +61,12 @@ def convert_webm_to_mp4(input_file, output_file=None, speed=1.0):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Convert WEBM to MP4 with adjustable playback speed"
+        description="Convert a video to MP4 with adjustable playback speed"
     )
 
     parser.add_argument(
         "input",
-        help="Input .webm file"
+        help="Input video file (any format ffmpeg can read)"
     )
 
     parser.add_argument(
@@ -83,7 +86,7 @@ def main():
 
     args = parser.parse_args()
 
-    convert_webm_to_mp4(
+    convert_to_mp4(
         input_file=args.input,
         output_file=args.output,
         speed=args.speed

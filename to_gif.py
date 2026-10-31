@@ -4,18 +4,21 @@ import os
 import sys
 
 
-def convert_mp4_to_gif(input_file, output_file=None, fps=15, width=None):
+def convert_to_gif(input_file, output_file=None, fps=15, width=None):
     if not os.path.exists(input_file):
         print(f"Input file not found: {input_file}")
         sys.exit(1)
 
-    if not input_file.endswith(".mp4"):
-        print("Input file must be .mp4")
-        sys.exit(1)
-
     # Default output name
     if output_file is None:
-        output_file = input_file[:-len(".mp4")] + ".gif"
+        base = os.path.splitext(input_file)[0]
+        output_file = base + ".gif"
+        if os.path.abspath(output_file) == os.path.abspath(input_file):
+            output_file = base + "_out.gif"
+
+    if os.path.abspath(output_file) == os.path.abspath(input_file):
+        print("Output file must differ from input file")
+        sys.exit(1)
 
     # Build a palette from the video for better GIF colors
     scale = f",scale={width}:-1:flags=lanczos" if width else ""
@@ -43,12 +46,12 @@ def convert_mp4_to_gif(input_file, output_file=None, fps=15, width=None):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Convert MP4 to GIF"
+        description="Convert a video to GIF"
     )
 
     parser.add_argument(
         "input",
-        help="Input .mp4 file"
+        help="Input video file (any format ffmpeg can read)"
     )
 
     parser.add_argument(
@@ -75,7 +78,7 @@ def main():
 
     args = parser.parse_args()
 
-    convert_mp4_to_gif(
+    convert_to_gif(
         input_file=args.input,
         output_file=args.output,
         fps=args.fps,
